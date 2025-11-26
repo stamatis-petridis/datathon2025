@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
+
+# macOS
+.DS_Store
+
+# Data outputs
+outputs/*.json
+outputs/*.csv
+
+# Raw data (DON'T accidentally commit bulky xlsx/pdfs)
+data/**/*.xlsx
+data/**/*.pdf
+data/**/*.csv
+
+# VS Code
+.vscode/
+
+# temporary files
+temp
