@@ -11,6 +11,8 @@ venv/
 .DS_Store
 
 # Data outputs
+data/geo
+outputs/
 outputs/*.json
 outputs/*.csv
 
