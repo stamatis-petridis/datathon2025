@@ -1,20 +1,25 @@
 # Housing Friction Atlas: Mapping Greece's Locked Stock Crisis
 
-> Quick brief for judges (skim in ~5 minutes). Data: ELSTAT 2021 dwelling census; friction and archetypes derived from `outputs/friction_by_municipality.json` and `outputs/municipal_archetypes.csv`. Formula: $F = \frac{1}{1-\sigma}$, where $\sigma$ is the locked stock share.
+A compact overview of Greece’s housing friction patterns using ELSTAT 2021 dwelling data.  
+Locked stock share: $\sigma = \frac{S_{\text{locked}}}{S_{\text{total}}}$.  
+Friction factor: $F = \frac{1}{1 - \sigma}$.
 
----
+## 2. Executive snapshot
 
-## 1. Executive snapshot
-- Locked stock (σ) drives friction: $F = \frac{1}{1-\sigma}$.
-- National σ (housing) ≈ 0.345 → F ≈ 1.53.
-- Archetypes (municipalities, n=333):
-  - **Tourist Drain:** 133 (avg σ 0.597; tourism share 0.499)
-  - **Transitional:** 132 (avg σ 0.387; tourism share 0.273)
-  - **Healthy:** 66 (avg σ 0.173; tourism share 0.070)
-  - **System Failure:** 2 (avg σ 0.583; tourism share 0.186; market 0.151; other 0.246)
-- Visuals: friction choropleth, archetype choropleth, top-σ compositions.
+- $\sigma$ measures the share of homes that exist but are not accessible (not rented, not sold, not used).  
+- $F$ describes how much tighter the market behaves because this stock is locked.  
+- National values: $\sigma \approx 0.345$ and $F \approx 1.53$.
 
-## 2. Method (1 min)
+Archetypes across 333 municipalities:
+
+- Tourist Drain: 133  
+- Transitional: 132  
+- Healthy: 66  
+- System Failure: 2  
+
+Includes: friction map, archetype map, and top-$\sigma$ composition charts.
+
+## 2. Method
 - Inputs: ELSTAT 2021 dwelling status by municipality; computed σ per municipality; shares by rent/sale, tourism (vacation+secondary), other reasons.
 - Friction: $F = \frac{1}{1-\sigma}$.
 - Archetypes:
