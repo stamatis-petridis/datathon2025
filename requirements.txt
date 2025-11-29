@@ -1,0 +1,6 @@
+geopandas
+folium
+fuzzywuzzy
+matplotlib
+pandas
+openpyxl

@@ -1,0 +1,68 @@
+# Housing Friction Atlas: Mapping Greece's Locked Stock Crisis
+
+> Quick brief for judges (skim in ~5 minutes). Data: ELSTAT 2021 dwelling census; friction and archetypes derived from `outputs/friction_by_municipality.json` and `outputs/municipal_archetypes.csv`. Formula: $F = \frac{1}{1-\sigma}$, where $\sigma$ is the locked stock share.
+
+---
+
+## 1. Executive snapshot
+- Locked stock (σ) drives friction: $F = \frac{1}{1-\sigma}$.
+- National σ (housing) ≈ 0.345 → F ≈ 1.53.
+- Archetypes (municipalities, n=333):
+  - **Tourist Drain:** 133 (avg σ 0.597; tourism share 0.499)
+  - **Transitional:** 132 (avg σ 0.387; tourism share 0.273)
+  - **Healthy:** 66 (avg σ 0.173; tourism share 0.070)
+  - **System Failure:** 2 (avg σ 0.583; tourism share 0.186; market 0.151; other 0.246)
+- Visuals: friction choropleth, archetype choropleth, top-σ compositions.
+
+## 2. Method (1 min)
+- Inputs: ELSTAT 2021 dwelling status by municipality; computed σ per municipality; shares by rent/sale, tourism (vacation+secondary), other reasons.
+- Friction: $F = \frac{1}{1-\sigma}$.
+- Archetypes:
+  - Tourist Drain: σ > 0.5 and tourism share > 0.3
+  - System Failure: σ > 0.5 and tourism share ≤ 0.3
+  - Transitional: 0.25 ≤ σ ≤ 0.5
+  - Healthy: σ < 0.25
+
+## 3. Maps (placeholders)
+- Friction (σ) map: ![](../outputs/choropleth_municipalities.png)
+- Archetype map: ![](../outputs/choropleth_archetypes.png)
+
+## 4. Archetype summary (from outputs/archetype_summary.json)
+- Tourist Drain: 133; avg σ 0.597; avg tourism share 0.499; avg market 0.061; avg system-failure 0.036
+- Transitional: 132; avg σ 0.387; avg tourism share 0.273; avg market 0.057; avg system-failure 0.058
+- Healthy: 66; avg σ 0.173; avg tourism share 0.070; avg market 0.054; avg system-failure 0.050
+- System Failure: 2; avg σ 0.583; avg tourism share 0.186; avg market 0.151; avg system-failure 0.246
+- Total municipalities: 333
+
+## 5. Composition insights
+- Top-σ cases skew to tourism extraction (vacation/secondary) with small market churn.
+- Healthy group: modest tourism share; balanced market turnover; lower “other” locked reasons.
+- System Failure: tiny set with high “other”/market frictions, not tourism-driven.
+- Transitional: mixed signals; watchlist for policy nudges.
+
+## 6. Policy archetypes (decision table)
+| Archetype | Trigger (σ / composition) | Policy focus | Instruments |
+|-----------|---------------------------|--------------|-------------|
+| Tourist Drain | σ > 0.5 & tourism > 0.3 | Cool tourism extraction, rebalance supply | STR caps/permits, tourist tax, incentives to shift to LTR, build-to-rent, seasonal conversion rules |
+| System Failure | σ > 0.5 & tourism ≤ 0.3 | Unlock stuck stock, fix market failures | Rehab grants, tax penalties on chronic vacancy, probate/ownership cleanup, social housing acquisition |
+| Transitional | 0.25–0.5 σ | Prevent drift upward | Light-touch STR regulation, monitoring, targeted rehab, modest incentives to LTR |
+| Healthy | σ < 0.25 | Maintain balance | Monitoring, preserve affordability, gentle guardrails on STR |
+
+## 7. Focus: major cities (placeholders)
+- Compare archetype and σ for Αθήνα, Θεσσαλονίκη, Πειραιάς, Πάτρα, Ηράκλειο, Λάρισα.
+- Composition chart: ![](../outputs/major_cities_composition.png)
+
+## 8. Top-20 friction profiles
+- Stacked composition: ![](../outputs/top20_sigma_composition.png)
+- Narrative: most top-σ municipalities are tourism-heavy islands/coast; a few interior “locked” cases.
+
+## 9. Risks and caveats
+- Name matching uses overrides between ELSTAT and GADM boundaries; minor mismatches possible.
+- σ measures empty dwellings; not all are recoverable; “other_reason” may mix heterogeneous causes.
+- Data year: 2021; post-2021 tourism shocks or housing policies not reflected.
+
+## 10. Next steps
+- Add time-series (2011 vs 2021) to track friction trends.
+- Merge price/rent data to link σ with affordability.
+- Scenario: apply STR caps in Tourist Drain areas; model σ reduction and F improvement.
+
