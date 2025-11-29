@@ -26,5 +26,5 @@ data/**/*.csv
 
 # temporary files
 temp
-tmp
+tmp/
 README.md
