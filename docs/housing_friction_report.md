@@ -88,3 +88,10 @@ Where:
 - Add time-series (2011 vs 2021) to track friction trends.
 - Merge price/rent data to link σ with affordability.
 - Scenario: apply STR caps in Tourist Drain areas; model σ reduction and F improvement.
+
+---
+
+## Appendix - Unlock Simulation (20%)
+A simulated 20% unlock of locked stock shows how prices respond when friction eases. We recompute σ, F, and price changes using the stylised price model; high-friction areas see the largest drops. Charts below show simulated σ, price change, and top-10 price drops.
+
+<div align="center">![](../outputs/unlock_effect_collage.png){ width=100% }</div>

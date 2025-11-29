@@ -23,6 +23,7 @@ import pandas as pd
 from branca.element import MacroElement
 from fuzzywuzzy import fuzz, process
 from matplotlib import colormaps
+from matplotlib import colors as mcolors
 from matplotlib.patches import Patch
 
 DATA_ROOT = Path(__file__).resolve().parents[1]
@@ -185,11 +186,12 @@ def prepare_dataframe() -> Tuple[gpd.GeoDataFrame, pd.DataFrame]:
 
 def plot_static(gdf: gpd.GeoDataFrame, counts: Dict[str, int]) -> None:
     fig, ax = plt.subplots(figsize=(10, 10))
+    labels = list(ARCT_COLORS.keys())
     colors = gdf["archetype"].map(ARCT_COLORS)
     gdf.plot(color=colors, linewidth=0.1, edgecolor="black", ax=ax)
     legend_handles = [
-        Patch(color=color, label=f"{label.replace('_', ' ').title()} ({counts.get(label, 0)})")
-        for label, color in ARCT_COLORS.items()
+        Patch(color=ARCT_COLORS[label], label=f"{label.replace('_', ' ').title()} ({counts.get(label, 0)})")
+        for label in labels
     ]
     ax.legend(handles=legend_handles, title="Archetypes", loc="lower left")
     ax.set_title("Housing Market Archetypes — Greece 2021", fontsize=14, weight="bold")
