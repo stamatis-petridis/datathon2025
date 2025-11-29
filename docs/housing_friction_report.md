@@ -38,8 +38,10 @@ Where:
 **Interpretation:** Friction $F$ acts as a demand multiplier. When $\sigma = 0.345$, $F = 1.53$ — the market behaves as if demand is 53% higher than reality.
 
 ## 3. Maps (placeholders)
-- Friction (σ) map: ![](../outputs/choropleth_municipalities.png)
-- Archetype map: ![](../outputs/choropleth_archetypes.png)
+- Friction (σ) map:
+  <div align="center">![](../outputs/choropleth_municipalities.png){ width=100% }</div>
+- Archetype map:
+  <div align="center">![](../outputs/choropleth_archetypes.png){ width=100% }</div>
 
 ## 4. Archetype summary (from outputs/archetype_summary.json)
 - Tourist Drain: 133; avg σ 0.597; avg tourism share 0.499; avg market 0.061; avg system-failure 0.036
@@ -64,10 +66,12 @@ Where:
 
 ## 7. Focus: major cities (placeholders)
 - Compare archetype and σ for Αθήνα, Θεσσαλονίκη, Πειραιάς, Πάτρα, Ηράκλειο, Λάρισα.
-- Composition chart: ![](../outputs/major_cities_composition.png)
+- Composition chart:
+  <div align="center">![](../outputs/major_cities_composition.png){ width=100% }</div>
 
 ## 8. Top-20 friction profiles
-- Stacked composition: ![](../outputs/top20_sigma_composition.png)
+- Stacked composition:
+  <div align="center">![](../outputs/top20_sigma_composition.png){ width=100% }</div>
 - Narrative: most top-σ municipalities are tourism-heavy islands/coast; a few interior “locked” cases.
 
 ## 9. Risks and caveats
