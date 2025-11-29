@@ -21,8 +21,9 @@ import geopandas as gpd
 import folium
 import matplotlib.pyplot as plt
 from fuzzywuzzy import fuzz, process
+from matplotlib import colormaps
 from matplotlib.colors import Normalize
-from matplotlib.cm import ScalarMappable, get_cmap
+from matplotlib.cm import ScalarMappable
 from branca import colormap as bcm
 
 
@@ -95,22 +96,103 @@ def load_data():
 
 def prepare_dataframe(gdf: gpd.GeoDataFrame, muni_records):
     muni_df = gpd.pd.DataFrame(muni_records)
+    muni_df["matched_name"] = gpd.pd.NA
+    muni_df["match_score"] = gpd.pd.NA
 
-    gadm_index = build_name_index(gdf["NAME_3"])
-    target_names = muni_df["name"].tolist()
-    matches = match_names(target_names, gadm_index)
+    overrides_one = {
+        "Piraeus": "ΠΕΙΡΑΙΩΣ",
+        "Athens": "ΑΘΗΝΑΙΩΝ",
+        "Acharnes": "ΑΧΑΡΝΩΝ",
+        "Heraklion": "ΗΡΑΚΛΕΙΟΥ",
+        "Naousa": "ΗΡΩΙΚΗΣ ΠΟΛΕΩΣ ΝΑΟΥΣΑΣ",
+        "Abdera": "ΑΒΔΗΡΩΝ",
+        "Ithaca": "ΙΘΑΚΗΣ",
+        "Paxi": "ΠΑΞΩΝ",
+        "Patras": "ΠΑΤΡΕΩΝ",
+        "Chalcis": "ΧΑΛΚΙΔΕΩΝ",
+        "Thebes": "ΘΗΒΑΙΩΝ",
+        "Delphi": "ΔΕΛΦΩΝ",
+        "Lamia": "ΛΑΜΙΕΩΝ",
+        "Cythera": "ΚΥΘΗΡΩΝ",
+        "Psara": "ΗΡΩΙΚΗΣ ΝΗΣΟΥ ΨΑΡΩΝ",
+        "Ios": "ΙΗΤΩΝ",
+        "Kasos": "ΗΡΩΙΚΗΣ ΝΗΣΟΥ ΚΑΣΟΥ",
+        "Orestida": "ΑΡΓΟΥΣ ΟΡΕΣΤΙΚΟΥ",
+        "Missolonghi": "ΙΕΡΑΣ ΠΟΛΗΣ ΜΕΣΟΛΟΓΓΙΟΥ",
+        "Kalambaka": "ΜΕΤΕΩΡΩΝ",
+        "Molos-Agios Konstantinos": "ΚΑΜΕΝΩΝ ΒΟΥΡΛΩΝ",
+        "South Kynouria": "ΝΟΤΙΑΣ ΚΥΝΟΥΡΙΑΣ",
+    }
 
-    muni_df["matched_name"] = muni_df["name"].map(lambda x: matches.get(x, (None, None))[0])
-    muni_df["match_score"] = muni_df["name"].map(lambda x: matches.get(x, (None, None))[1])
+    overrides_many = {
+        "Lesbos": ["ΔΥΤΙΚΗΣ ΛΕΣΒΟΥ", "ΜΥΤΙΛΗΝΗΣ"],
+        "Cephalonia": ["ΑΡΓΟΣΤΟΛΙΟΥ", "ΛΗΞΟΥΡΙΟΥ", "ΣΑΜΗΣ"],
+    }
 
-    merged = gdf.merge(muni_df, left_on="NAME_3", right_on="matched_name", how="left")
-    merged = merged.dropna(subset=["sigma"])
+    # Apply one-to-one overrides
+    greek_to_idx = {name: i for i, name in enumerate(muni_df["name"])}
+    for gadm_name, greek_name in overrides_one.items():
+        idx = greek_to_idx.get(greek_name)
+        if idx is not None:
+            muni_df.loc[idx, "matched_name"] = gadm_name
+            muni_df.loc[idx, "match_score"] = 100
+
+    # Build aggregated rows for many-to-one overrides (weighted by s_total)
+    override_rows = []
+    for gadm_name, greek_list in overrides_many.items():
+        subset = muni_df[muni_df["name"].isin(greek_list)]
+        if subset.empty:
+            continue
+        total = subset["s_total"].sum()
+        if total == 0:
+            continue
+        weighted_sigma = (subset["sigma"] * subset["s_total"]).sum() / total
+        override_rows.append(
+            {
+                "name": f"{gadm_name} (agg)",
+                "matched_name": gadm_name,
+                "match_score": 100,
+                "sigma": weighted_sigma,
+                "s_total": total,
+            }
+        )
+    if override_rows:
+        muni_df = gpd.pd.concat([muni_df, gpd.pd.DataFrame(override_rows)], ignore_index=True)
+
+    # Fuzzy match remaining (skip Athos)
+    gadm_filtered = gdf[gdf["NAME_3"] != "Athos"].copy()
+    gadm_index = build_name_index(gadm_filtered["NAME_3"])
+
+    remaining = muni_df[muni_df["matched_name"].isna()]
+    remaining_matches = match_names(remaining["name"].tolist(), gadm_index)
+    muni_df.loc[remaining.index, "matched_name"] = remaining["name"].map(
+        lambda x: remaining_matches.get(x, (None, None))[0]
+    )
+    muni_df.loc[remaining.index, "match_score"] = remaining["name"].map(
+        lambda x: remaining_matches.get(x, (None, None))[1]
+    )
+
+    # Deduplicate on matched_name keeping best score
+    muni_df_sorted = muni_df.sort_values(by=["match_score"], ascending=False)
+    muni_df_dedup = muni_df_sorted.drop_duplicates(subset=["matched_name"])
+
+    unmatched_json = muni_df_dedup[muni_df_dedup["matched_name"].isna()]["name"].tolist()
+
+    merged_all = gadm_filtered.merge(muni_df_dedup, left_on="NAME_3", right_on="matched_name", how="left")
+    matched_count = merged_all["sigma"].notna().sum()
+    unmatched_shapes = merged_all[merged_all["sigma"].isna()]["NAME_3"].tolist()
+
+    print(f"Matched municipalities: {matched_count} / {len(gadm_filtered)}")
+    print(f"Unmatched municipalities from JSON ({len(unmatched_json)}): {unmatched_json}")
+    print(f"Unmatched GADM shapes ({len(unmatched_shapes)}): {unmatched_shapes}")
+
+    merged = merged_all.dropna(subset=["sigma"])
     return merged
 
 
 def plot_static(merged: gpd.GeoDataFrame):
     fig, ax = plt.subplots(figsize=(10, 10))
-    cmap = get_cmap(CMAP_NAME)
+    cmap = colormaps.get_cmap(CMAP_NAME)
     norm = Normalize(vmin=VMIN, vmax=VMAX)
 
     merged.plot(column="sigma", cmap=cmap, norm=norm, linewidth=0.1, edgecolor="black", ax=ax)
@@ -132,7 +214,7 @@ def plot_static(merged: gpd.GeoDataFrame):
 
 def plot_interactive(merged: gpd.GeoDataFrame):
     merged = merged.to_crs(epsg=4326)
-    center = merged.geometry.unary_union.centroid
+    center = merged.geometry.union_all().centroid
     m = folium.Map(location=[center.y, center.x], zoom_start=7, tiles="cartodbpositron")
 
     colormap = bcm.linear.RdYlGn_11.scale(VMIN, VMAX).to_step(10)
