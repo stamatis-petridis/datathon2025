@@ -23,6 +23,20 @@
   - Transitional: 0.25 ≤ σ ≤ 0.5
   - Healthy: σ < 0.25
 
+### Price Model
+
+$$P = P_0 \left(\frac{D \cdot F}{S}\right)^\alpha$$
+
+Where:
+- $P$ = market price (rent/purchase)
+- $P_0$ = baseline price (construction cost floor)
+- $D$ = demand
+- $S$ = physical supply
+- $F = \frac{1}{1-\sigma}$ = friction multiplier
+- $\alpha$ = price elasticity (typically 1.2–1.8 for constrained markets)
+
+**Interpretation:** Friction $F$ acts as a demand multiplier. When $\sigma = 0.345$, $F = 1.53$ — the market behaves as if demand is 53% higher than reality.
+
 ## 3. Maps (placeholders)
 - Friction (σ) map: ![](../outputs/choropleth_municipalities.png)
 - Archetype map: ![](../outputs/choropleth_archetypes.png)
@@ -65,4 +79,3 @@
 - Add time-series (2011 vs 2021) to track friction trends.
 - Merge price/rent data to link σ with affordability.
 - Scenario: apply STR caps in Tourist Drain areas; model σ reduction and F improvement.
-

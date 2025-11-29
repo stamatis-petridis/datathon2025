@@ -1,4 +1,5 @@
 .PHONY: install data csv friction analysis maps report all clean
+.ONESHELL:
 
 PYTHON := python3
 PIP := $(PYTHON) -m pip
@@ -20,21 +21,37 @@ data:
 	unzip -o $(GEO_DIR)/gadm41_GRC_shp.zip -d $(GEO_DIR)
 
 csv:
-	$(PYTHON) - <<'PY'\nfrom pathlib import Path\nimport pandas as pd\nsrc = Path("data/elstat")\nout = src / "csv"\nout.mkdir(parents=True, exist_ok=True)\nfor xlsx in src.glob("*.xlsx"):\n    df = pd.read_excel(xlsx)\n    df.to_csv(out / f\"{xlsx.stem}.csv\", index=False)\n    print(f\"Wrote {out/xlsx.stem}.csv\")\nPY
+	$(PYTHON) -c "from pathlib import Path; import pandas as pd, sys; src=Path('data/elstat'); out=src/'csv'; out.mkdir(parents=True, exist_ok=True); \
+files=sorted(src.glob('*.xlsx')); \
+[ (pd.read_excel(x).to_csv(out/f'{x.stem}.csv', index=False), sys.stdout.write(f'Wrote {out/x.stem}.csv\\n')) for x in files ];"
 
 friction:
-	@if [ -n "$(wildcard scripts/compute_f_*.py)" ]; then \\\n\t\tfor f in scripts/compute_f_*.py; do echo \"Running $$f\"; $(PYTHON) $$f; done; \\\n\telse \\\n\t\techo \"No compute_f_*.py scripts found\"; \\\n\tfi
+	@if [ -n "$(wildcard scripts/compute_f_*.py)" ]; then \
+		for f in scripts/compute_f_*.py; do echo "Running $$f"; $(PYTHON) $$f; done; \
+	else \
+		echo "No compute_f_*.py scripts found"; \
+	fi
 
 analysis:
 	$(PYTHON) scripts/analyze_vacancy_composition.py
 
 maps:
-	$(PYTHON) scripts/choropleth_municipalities.py\n\t$(PYTHON) scripts/choropleth_archetypes.py
+	$(PYTHON) scripts/choropleth_municipalities.py
+	$(PYTHON) scripts/choropleth_archetypes.py
 
 report:
-	@command -v pandoc >/dev/null 2>&1 && pandoc docs/housing_friction_report.md -o outputs/housing_friction_report.pdf || echo \"pandoc not installed; skipping PDF export\"
+	@printf "Generating PDF report (pandoc)...\n"; \
+	if command -v pandoc >/dev/null 2>&1; then \
+		pandoc docs/housing_friction_report.md \
+			--pdf-engine=xelatex \
+			--resource-path=.:docs:outputs \
+			-V mainfont="Times New Roman" \
+			-o outputs/housing_friction_report.pdf; \
+	else \
+		echo "pandoc not installed; skipping PDF export"; \
+	fi
 
 all: install data csv friction analysis maps report
 
 clean:
-	rm -f $(OUTPUT_DIR)/*.png $(OUTPUT_DIR)/*.html $(OUTPUT_DIR)/*.json $(OUTPUT_DIR)/*.csv
+	rm -f $(OUTPUT_DIR)/*.png $(OUTPUT_DIR)/*.html $(OUTPUT_DIR)/*.json $(OUTPUT_DIR)/*.csv $(OUTPUT_DIR)/*.pdf
