@@ -1,4 +1,4 @@
-.PHONY: install data csv friction analysis maps report all clean
+.PHONY: install data csv friction analysis maps interactive report all clean
 .ONESHELL:
 
 PYTHON := python3
@@ -38,6 +38,11 @@ analysis:
 maps:
 	$(PYTHON) scripts/choropleth_municipalities.py
 	$(PYTHON) scripts/choropleth_archetypes.py
+	$(PYTHON) scripts/unlock_simulator.py
+	$(PYTHON) scripts/unlock_simulator_interactive.py
+
+interactive:
+	$(PYTHON) scripts/unlock_simulator_interactive.py
 
 report:
 	@printf "Generating PDF report (pandoc)...\n"; \
