@@ -38,7 +38,10 @@ analysis:
 maps:
 	$(PYTHON) scripts/choropleth_municipalities.py
 	$(PYTHON) scripts/choropleth_archetypes.py
+	$(PYTHON) scripts/choropleth_absolute_empty.py
+	$(PYTHON) scripts/choropleth_empty_per_capita.py
 	$(PYTHON) scripts/unlock_simulator.py
+	$(PYTHON) scripts/national_locked_stock_pie.py
 	$(PYTHON) scripts/unlock_simulator_interactive.py
 
 interactive:

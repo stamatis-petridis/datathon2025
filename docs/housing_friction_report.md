@@ -12,6 +12,8 @@ Friction factor: $F = \frac{1}{1 - \sigma}$.
 - Other empty/locked: 327,496  
 - Locked stock ($\sigma \cdot S_{\text{total}}$): $\approx 2{,}277{,}608$ dwellings  
 
+<div align="center">![](../outputs/national_locked_stock_pie.png){ width=70% }</div>
+
 ## 2. Executive snapshot
 
 - $\sigma$ measures the share of homes that exist but are not accessible (not rented, not sold, not used).  

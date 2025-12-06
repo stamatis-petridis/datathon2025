@@ -97,6 +97,8 @@ def load_municipal_friction(path: Path) -> pd.DataFrame:
 
 
 # --- name matching helpers (reuse overrides from choropleth scripts) ---
+# These overrides say how specific Greek ELSTAT municipality names map
+# onto the corresponding English GADM level‑3 names.
 OVER_ONE = {
     "Piraeus": "ΠΕΙΡΑΙΩΣ",
     "Athens": "ΑΘΗΝΑΙΩΝ",
@@ -121,6 +123,7 @@ OVER_ONE = {
     "Molos-Agios Konstantinos": "ΚΑΜΕΝΩΝ ΒΟΥΡΛΩΝ",
     "South Kynouria": "ΝΟΤΙΑΣ ΚΥΝΟΥΡΙΑΣ",
 }
+# Three-bucket archetype palette used for both baseline and simulated maps.
 ARCT_COLORS = {
     "PROBLEMATIC": "#d62728",
     "TRANSITIONAL": "#ffbb33",
@@ -170,6 +173,7 @@ def match_names(targets, candidates):
 
 
 def merge_with_shapes(df: pd.DataFrame, shp_path: Path) -> gpd.GeoDataFrame:
+    """Attach simulation results to GADM level‑3 municipality polygons."""
     gdf = gpd.read_file(shp_path).to_crs(epsg=4326)
     gdf = gdf[gdf["NAME_3"] != "Athos"]
 
@@ -226,7 +230,7 @@ def simulate_unlock(
     """
     res = df.copy()
 
-    # Compute tourism share if present
+    # Compute tourism share if present (used only for archetype labelling).
     if {"vacation", "secondary", "s_total"}.issubset(res.columns):
         res["share_tourism"] = (pd.to_numeric(res["vacation"], errors="coerce") + pd.to_numeric(res["secondary"], errors="coerce")) / pd.to_numeric(res["s_total"], errors="coerce")
     else:
@@ -234,7 +238,8 @@ def simulate_unlock(
 
     res["F_baseline"] = compute_friction(res["sigma"])
 
-    # Apply unlock to all municipalities (proportional reduction of locked share)
+    # Apply unlock to all municipalities as a proportional reduction
+    # of the locked share σ (percentage reduction, not percentage points).
     res["sigma_new"] = res["sigma"] * (1.0 - unlock_fraction)
 
     res["F_new"] = compute_friction(res["sigma_new"])
@@ -244,6 +249,7 @@ def simulate_unlock(
     res["price_change_pct"] = (ratio - 1.0) * 100.0
 
     # Archetypes (baseline and simulated) — three-bucket view
+    # PROBLEMATIC / TRANSITIONAL / HEALTHY, based only on σ.
     def classify(sig, tour):
         sig = float(sig)
         # Problematic: high σ, regardless of tourism mix
@@ -264,7 +270,7 @@ def simulate_unlock(
 
 
 def print_summary(df: pd.DataFrame, unlock_fraction: float, alpha: float, min_sigma: float) -> None:
-    """Print a small human-readable summary."""
+    """Print a small human-readable summary of the scenario and results."""
     print("=" * 100)
     print("UNLOCK SIMULATOR — Housing Friction")
     print("=" * 100)
@@ -344,7 +350,9 @@ def main() -> None:
     output_path = Path(args.output_csv)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # 1) Load baseline friction + dwelling counts per municipality.
     df = load_municipal_friction(input_path)
+    # 2) Run unlock simulation.
     sim = simulate_unlock(
         df=df,
         unlock_fraction=args.unlock_fraction,
@@ -352,10 +360,16 @@ def main() -> None:
         min_sigma=args.min_sigma,
     )
 
+    # 3) Persist full simulation table.
     sim.to_csv(output_path, index=False)
     print(f"✓ Simulation results written to: {output_path.resolve()}")
 
     # Plot collage
+    # ------------------------------------------------------------------
+    # Build a 3x2 figure:
+    #   Row 1: simulated σ map, price‑change map
+    #   Row 2: major‑city price drops, top‑10 price drops
+    #   Row 3: baseline archetype map, simulated archetype map
     collage_path = output_path.parent / "unlock_effect_collage.png"
     try:
         # Prepare map data for simulated metrics
