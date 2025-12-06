@@ -33,10 +33,9 @@ PNG_OUT = DATA_ROOT / "outputs" / "choropleth_archetypes.png"
 HTML_OUT = DATA_ROOT / "outputs" / "choropleth_archetypes.html"
 
 ARCT_COLORS = {
-    "TOURIST_DRAIN": "#d62728",
+    "PROBLEMATIC": "#d62728",
     "TRANSITIONAL": "#ffbb33",
     "HEALTHY": "#2ca02c",
-    "SYSTEM_FAILURE": "#7f7f7f",
 }
 
 OVER_ONE = {
@@ -112,11 +111,8 @@ def match_names(targets: Iterable[str], candidates: Dict[str, str]) -> Dict[str,
 
 def reclassify(row: pd.Series) -> str:
     sigma = row["sigma"]
-    tourism = row["share_tourism"]
-    if sigma > 0.5 and tourism > 0.3:
-        return "TOURIST_DRAIN"
     if sigma > 0.5:
-        return "SYSTEM_FAILURE"
+        return "PROBLEMATIC"
     if 0.25 <= sigma <= 0.5:
         return "TRANSITIONAL"
     return "HEALTHY"

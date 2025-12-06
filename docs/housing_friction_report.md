@@ -4,6 +4,14 @@ A compact overview of Greece’s housing friction patterns using ELSTAT 2021 dwe
 Locked stock share: $\sigma = \frac{S_{\text{locked}}}{S_{\text{total}}}$.  
 Friction factor: $F = \frac{1}{1 - \sigma}$.
 
+**National data snapshot (Greece, National census 2021)**  
+- Total dwellings ($S_{\text{total}}$): 6,596,782 (normal dwellings)  
+- Empty for rent: 406,885  
+- Empty for sale: 59,471  
+- Vacation/secondary homes: 1,483,734 (856,991 vacation + 626,743 secondary)  
+- Other empty/locked: 327,496  
+- Locked stock ($\sigma \cdot S_{\text{total}}$): $\approx 2{,}277{,}608$ dwellings  
+
 ## 2. Executive snapshot
 
 - $\sigma$ measures the share of homes that exist but are not accessible (not rented, not sold, not used).  
@@ -12,19 +20,17 @@ Friction factor: $F = \frac{1}{1 - \sigma}$.
 
 Archetypes across 333 municipalities:
 
-- Tourist Drain: 133  
+- Problematic (tourism-driven or systemic): 135  
 - Transitional: 132  
 - Healthy: 66  
-- System Failure: 2  
 
 Includes: friction map, archetype map, and top-$\sigma$ composition charts.
 
 ## 2. Method
 - Inputs: ELSTAT 2021 dwelling status by municipality; computed σ per municipality; shares by rent/sale, tourism (vacation+secondary), other reasons.
 - Friction: $F = \frac{1}{1-\sigma}$.
-- Archetypes:
-  - Tourist Drain: σ > 0.5 and tourism share > 0.3
-  - System Failure: σ > 0.5 and tourism share ≤ 0.3
+- Archetypes (analysis groups):
+  - Problematic: σ > 0.5 (includes both tourism-driven and system-failure cases)
   - Transitional: 0.25 ≤ σ ≤ 0.5
   - Healthy: σ < 0.25
 
@@ -48,26 +54,24 @@ Where:
 - Archetype map:
   <div align="center">![](../outputs/choropleth_archetypes.png){ width=100% }</div>
 
-## 4. Archetype summary (from outputs/archetype_summary.json)
-- Tourist Drain: 133; avg σ 0.597; avg tourism share 0.499; avg market 0.061; avg system-failure 0.036
+## 4. Archetype summary (from outputs/archetype_summary.json, grouped)
+- Problematic (Tourist Drain + System Failure): 135; avg σ 0.597; avg tourism share 0.495; avg market 0.063; avg system-failure 0.039
 - Transitional: 132; avg σ 0.387; avg tourism share 0.273; avg market 0.057; avg system-failure 0.058
 - Healthy: 66; avg σ 0.173; avg tourism share 0.070; avg market 0.054; avg system-failure 0.050
-- System Failure: 2; avg σ 0.583; avg tourism share 0.186; avg market 0.151; avg system-failure 0.246
 - Total municipalities: 333
 
 ## 5. Composition insights
 - Top-σ cases skew to tourism extraction (vacation/secondary) with small market churn.
 - Healthy group: modest tourism share; balanced market turnover; lower “other” locked reasons.
-- System Failure: tiny set with high “other”/market frictions, not tourism-driven.
+- Within the Problematic group, a small subset is driven more by “other”/market frictions than tourism.
 - Transitional: mixed signals; watchlist for policy nudges.
 
 ## 6. Policy archetypes (decision table)
-| Archetype | Trigger (σ / composition) | Policy focus | Instruments |
-|-----------|---------------------------|--------------|-------------|
-| Tourist Drain | σ > 0.5 & tourism > 0.3 | Cool tourism extraction, rebalance supply | STR caps/permits, tourist tax, incentives to shift to LTR, build-to-rent, seasonal conversion rules |
-| System Failure | σ > 0.5 & tourism ≤ 0.3 | Unlock stuck stock, fix market failures | Rehab grants, tax penalties on chronic vacancy, probate/ownership cleanup, social housing acquisition |
-| Transitional | 0.25–0.5 σ | Prevent drift upward | Light-touch STR regulation, monitoring, targeted rehab, modest incentives to LTR |
-| Healthy | σ < 0.25 | Maintain balance | Monitoring, preserve affordability, gentle guardrails on STR |
+| Archetype   | Trigger (σ / composition)          | Policy focus                                      | Instruments |
+|-------------|------------------------------------|---------------------------------------------------|-------------|
+| Problematic | σ > 0.5 (tourism or system-failure)| Cool tourism extraction and unlock stuck stock    | STR caps/permits, tourist tax, rehab grants, tax penalties on chronic vacancy, probate/ownership cleanup, social housing acquisition |
+| Transitional| 0.25–0.5 σ                         | Prevent drift upward                              | Light-touch STR regulation, monitoring, targeted rehab, modest incentives to LTR |
+| Healthy     | σ < 0.25                           | Maintain balance                                  | Monitoring, preserve affordability, gentle guardrails on STR |
 
 ## 7. Focus: major cities (placeholders)
 - Compare archetype and σ for Αθήνα, Θεσσαλονίκη, Πειραιάς, Πάτρα, Ηράκλειο, Λάρισα.

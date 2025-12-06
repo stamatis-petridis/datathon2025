@@ -122,10 +122,9 @@ OVER_ONE = {
     "South Kynouria": "ΝΟΤΙΑΣ ΚΥΝΟΥΡΙΑΣ",
 }
 ARCT_COLORS = {
-    "TOURIST_DRAIN": "#d62728",
+    "PROBLEMATIC": "#d62728",
     "TRANSITIONAL": "#ffbb33",
     "HEALTHY": "#2ca02c",
-    "SYSTEM_FAILURE": "#7f7f7f",
 }
 
 
@@ -244,13 +243,12 @@ def simulate_unlock(
     res["price_ratio"] = ratio
     res["price_change_pct"] = (ratio - 1.0) * 100.0
 
-    # Archetypes (baseline and simulated)
+    # Archetypes (baseline and simulated) — three-bucket view
     def classify(sig, tour):
-        tour = tour if pd.notna(tour) else 0
-        if sig > 0.5 and tour > 0.3:
-            return "TOURIST_DRAIN"
+        sig = float(sig)
+        # Problematic: high σ, regardless of tourism mix
         if sig > 0.5:
-            return "SYSTEM_FAILURE"
+            return "PROBLEMATIC"
         if 0.25 <= sig <= 0.5:
             return "TRANSITIONAL"
         return "HEALTHY"

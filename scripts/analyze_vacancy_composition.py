@@ -26,11 +26,8 @@ def _norm(text: str) -> str:
 
 def classify_row(row: pd.Series) -> str:
     sigma = row["sigma"]
-    tourism = row["share_tourism"]
-    if sigma > 0.5 and tourism > 0.3:
-        return "TOURIST_DRAIN"
     if sigma > 0.5:
-        return "SYSTEM_FAILURE"
+        return "PROBLEMATIC"
     if 0.25 <= sigma <= 0.5:
         return "TRANSITIONAL"
     return "HEALTHY"
