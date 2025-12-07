@@ -371,13 +371,16 @@ def main() -> None:
     sim.to_csv(output_path, index=False)
     print(f"✓ Simulation results written to: {output_path.resolve()}")
 
-    # Plot collage
+    # Plot collages
     # ------------------------------------------------------------------
-    # Build a 3x2 figure:
+    # Collage A: 3x2 (existing)
     #   Row 1: simulated σ map, price‑change map
     #   Row 2: major‑city price drops, top‑10 price drops
     #   Row 3: baseline archetype map, simulated archetype map
+    #
+    # Collage B: 2x3 (maps + bar charts, more compact)
     collage_path = output_path.parent / "unlock_effect_collage.png"
+    collage_path_b = output_path.parent / "unlock_effect_collage_alt.png"
     try:
         # Prepare map data for simulated metrics
         shp_path = Path("data/geo/gadm41_GRC_3.shp")
@@ -489,6 +492,80 @@ def main() -> None:
         fig.savefig(collage_path, dpi=300, bbox_inches="tight")
         plt.close(fig)
         print(f"✓ Collage saved to: {collage_path.resolve()}")
+
+        # Collage B: 2 rows x 3 cols (maps + bars + archetype sim)
+        fig2, axes2 = plt.subplots(2, 3, figsize=(15, 10))
+
+        # B1: sigma map
+        merged.plot(column="sigma_new", cmap=cmap_sigma, linewidth=0.1, edgecolor="black", ax=axes2[0, 0])
+        axes2[0, 0].set_title("Simulated σ (after unlock)")
+        axes2[0, 0].axis("off")
+        sm1b = plt.cm.ScalarMappable(
+            cmap=cmap_sigma,
+            norm=mcolors.Normalize(
+                vmin=merged["sigma_new"].min(skipna=True),
+                vmax=merged["sigma_new"].max(skipna=True),
+            ),
+        )
+        sm1b.set_array([])
+        fig2.colorbar(sm1b, ax=axes2[0, 0], fraction=0.03, pad=0.02, label="σ (after unlock)")
+
+        # B2: price change map
+        merged.plot(column="price_change_pct", cmap=cmap_price, linewidth=0.1, edgecolor="black", ax=axes2[0, 1])
+        axes2[0, 1].set_title("Price change (%)")
+        axes2[0, 1].axis("off")
+        sm2b = plt.cm.ScalarMappable(
+            cmap=cmap_price,
+            norm=mcolors.Normalize(
+                vmin=merged["price_change_pct"].min(skipna=True),
+                vmax=merged["price_change_pct"].max(skipna=True),
+            ),
+        )
+        sm2b.set_array([])
+        fig2.colorbar(sm2b, ax=axes2[0, 1], fraction=0.03, pad=0.02, label="Price change (%)")
+
+        # B3: simulated archetypes
+        merged.plot(column="arc_code_sim", cmap=cmap_arc, norm=norm_arc, linewidth=0.1, edgecolor="black", ax=axes2[0, 2])
+        axes2[0, 2].set_title("Simulated Archetypes")
+        axes2[0, 2].axis("off")
+        handles_arc_sim = [
+            Patch(color=ARCT_COLORS[label], label=f"{label.replace('_', ' ').title()} ({arc_counts_sim.get(label, 0)})")
+            for label in labels_arc
+        ]
+        axes2[0, 2].legend(handles=handles_arc_sim, title="Archetype (sim)", loc="lower left")
+
+        # B4: major cities
+        if major_rows:
+            axes2[1, 0].barh(majors["Municipality"], majors["drop_mag"], color="#2ca02c", alpha=0.85)
+            axes2[1, 0].set_title("Major cities — price drop (%)")
+            axes2[1, 0].set_xlabel("Price drop magnitude (%)")
+            axes2[1, 0].invert_yaxis()
+            for _, row in majors.iterrows():
+                axes2[1, 0].text(row["drop_mag"] + 0.05, row["Municipality"], f"{row['price_change_pct']:.2f}%", va="center", fontsize=8)
+        else:
+            axes2[1, 0].text(0.5, 0.5, "Major cities not found", ha="center", va="center")
+            axes2[1, 0].axis("off")
+
+        # B5: top 10 price drops
+        axes2[1, 1].barh(top10["Municipality"], top10["price_change_pct"], color="#2ca02c", alpha=0.85)
+        axes2[1, 1].set_title("Top 10 price drops")
+        axes2[1, 1].set_xlabel("Price change (%)")
+        axes2[1, 1].invert_yaxis()
+
+        # B6: baseline archetypes
+        merged.plot(column="arc_code_base", cmap=cmap_arc, norm=norm_arc, linewidth=0.1, edgecolor="black", ax=axes2[1, 2])
+        axes2[1, 2].set_title("Baseline Archetypes")
+        axes2[1, 2].axis("off")
+        handles_arc_base_b = [
+            Patch(color=ARCT_COLORS[label], label=f"{label.replace('_', ' ').title()} ({arc_counts_base.get(label, 0)})")
+            for label in labels_arc
+        ]
+        axes2[1, 2].legend(handles=handles_arc_base_b, title="Archetype (base)", loc="lower left")
+
+        plt.tight_layout()
+        fig2.savefig(collage_path_b, dpi=300, bbox_inches="tight")
+        plt.close(fig2)
+        print(f"✓ Collage (2x3) saved to: {collage_path_b.resolve()}")
     except Exception as exc:  # pragma: no cover
         print(f"Warning: failed to create collage ({exc})")
 

@@ -28,7 +28,7 @@
 - Message: Greece behaves like a structurally distorted outlier in the EU housing system.
 
 # Slide 5 — Unlock Simulation (20% reduction)
-![](../outputs/unlock_effect_collage.png)
+![](../outputs/unlock_effect_collage_alt.png)
 - Simulated 20% reduction in σ in every municipality (uniform unlock).
 - Constrained markets see price drops from about −20% to −60%.
 - Achieved without new construction: purely by unlocking existing stock.
