@@ -528,11 +528,6 @@ def main() -> None:
         merged.plot(column="arc_code_sim", cmap=cmap_arc, norm=norm_arc, linewidth=0.1, edgecolor="black", ax=axes2[0, 2])
         axes2[0, 2].set_title("Simulated Archetypes")
         axes2[0, 2].axis("off")
-        handles_arc_sim = [
-            Patch(color=ARCT_COLORS[label], label=f"{label.replace('_', ' ').title()} ({arc_counts_sim.get(label, 0)})")
-            for label in labels_arc
-        ]
-        axes2[0, 2].legend(handles=handles_arc_sim, title="Archetype (sim)", loc="lower left")
 
         # B4: major cities
         if major_rows:
@@ -556,11 +551,6 @@ def main() -> None:
         merged.plot(column="arc_code_base", cmap=cmap_arc, norm=norm_arc, linewidth=0.1, edgecolor="black", ax=axes2[1, 2])
         axes2[1, 2].set_title("Baseline Archetypes")
         axes2[1, 2].axis("off")
-        handles_arc_base_b = [
-            Patch(color=ARCT_COLORS[label], label=f"{label.replace('_', ' ').title()} ({arc_counts_base.get(label, 0)})")
-            for label in labels_arc
-        ]
-        axes2[1, 2].legend(handles=handles_arc_base_b, title="Archetype (base)", loc="lower left")
 
         plt.tight_layout()
         fig2.savefig(collage_path_b, dpi=300, bbox_inches="tight")

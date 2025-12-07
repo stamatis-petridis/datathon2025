@@ -32,7 +32,7 @@ Locked stock behaves like a demand multiplier; at σ = 0.35, $F \approx 1.53$ (p
 \newpage
 
 # Slide 5 — Unlock Simulation (20%)
-![](../outputs/unlock_effect_collage.png)
+![](../outputs/unlock_effect_collage_alt.png)
 - Uniform 20% unlock of locked stock → price drops roughly 20–60% in constrained markets.
 - Zero new construction; purely unlocking existing stock.
 - Shows how friction relief alone can restore affordability.
