@@ -202,7 +202,7 @@ def plot_static(merged: gpd.GeoDataFrame):
     cbar = fig.colorbar(sm, ax=ax, fraction=0.03, pad=0.02)
     cbar.set_label("σ (locked stock share)")
 
-    ax.set_title("Housing Friction Index (σ) by Municipality — Greece 2021", fontsize=14, weight="bold")
+    ax.set_title("Locked Stock Percentage (σ) by Municipality — Greece 2021", fontsize=14, weight="bold")
     ax.text(0.5, 0.92, "σ = locked stock share | Data: ELSTAT Census 2021", fontsize=10,
             ha="center", transform=fig.transFigure)
     ax.axis("off")
