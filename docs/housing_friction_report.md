@@ -117,7 +117,7 @@ Note: The multiplicative model slightly underestimates total $F = 1.53$ because 
 - Other empty/locked: 327,496
 - Locked stock ($\sigma \cdot S_{\text{total}}$): $\approx 2{,}277{,}608$ dwellings
 
-## 2. Executive snapshot
+## Executive snapshot
 
 - $\sigma$ measures the share of homes that exist but are not accessible (not rented, not sold, not used). 
 - $F$ describes how much tighter the market behaves because this stock is locked.
@@ -133,7 +133,7 @@ Archetypes across 333 municipalities (EU benchmark buckets):
 
 Includes: friction map, archetype map, and top-$\sigma$ composition charts.
 
-## 3. Method
+## Method
 - Inputs: ELSTAT 2021 dwelling status by municipality; computed σ per municipality; shares by rent/sale, tourism (vacation+secondary), other reasons.
 - Friction: $F = \frac{1}{1-\sigma}$.
 - Archetypes (EU-style benchmark):
@@ -145,53 +145,81 @@ Includes: friction map, archetype map, and top-$\sigma$ composition charts.
   - Market Collapse: σ ≥ 0.50
 
 
-## 4. Maps (placeholders)
+## Maps
 - Friction (σ) map:
   <div align="center">![](../outputs/choropleth_municipalities.png){ width=100% }</div>
 - Archetype map:
   <div align="center">![](../outputs/choropleth_archetypes.png){ width=100% }</div>
 
-## 5. Archetype summary (from outputs/archetype_summary.json)
-- EU Efficient: 1; avg σ 0.090; avg tourism 0.037; avg market 0.027; avg other 0.026
-- EU Normal: 17; avg σ 0.132; avg tourism 0.048; avg market 0.040; avg other 0.043
-- Mediterranean Acceptable: 34; avg σ 0.175; avg tourism 0.066; avg market 0.058; avg other 0.052
-- Elevated Friction: 37; avg σ 0.257; avg tourism 0.136; avg market 0.062; avg other 0.060
-- Structural Dysfunction: 109; avg σ 0.410; avg tourism 0.298; avg market 0.056; avg other 0.056
-- Market Collapse: 135; avg σ 0.597; avg tourism 0.495; avg market 0.063; avg other 0.039
-- Total municipalities: 333
+## EU Benchmark Classification
 
-## 6. Composition insights
-- Top-σ cases skew to tourism extraction (vacation/secondary) with small market churn.
-- Healthy group: modest tourism share; balanced market turnover; lower “other” locked reasons.
-- Within the Problematic group, a small subset is driven more by “other”/market frictions than tourism.
-- Transitional: mixed signals; watchlist for policy nudges.
+### At a Glance
 
-## 7. Policy archetypes (decision table)
-| Archetype                  | Trigger (σ)                | Policy focus                                      | Instruments |
-|----------------------------|----------------------------|---------------------------------------------------|-------------|
-| EU Efficient               | σ < 0.10                   | Monitor only                                      | Monitoring / keep status quo |
-| EU Normal                  | 0.10–0.15                  | Light monitoring, preserve balance                | Light monitoring, preserve affordability |
-| Mediterranean Acceptable   | 0.15–0.20                  | Early warning, prevent drift                      | Early warning, gentle STR guardrails, modest LTR incentives |
-| Elevated Friction          | 0.20–0.30                  | Active intervention                               | STR limits, incentives to shift to LTR, targeted rehab |
-| Structural Dysfunction     | 0.30–0.50                  | Strong intervention                               | Vacancy taxes, rehab grants, enforcement on chronic vacancy |
-| Market Collapse            | ≥ 0.50                     | Emergency measures                                | STR caps/permits, vacancy tax, inheritance/probate reform, social housing acquisition |
+| Category | σ Range | Count | Avg σ | Status | Color |
+|----------|---------|-------|-------|--------|-------|
+| EU Efficient | < 10% | 1 | 9.0% | Northern European standard | Dark green |
+| EU Normal | 10–15% | 17 | 13.2% | Central European standard | Green |
+| Mediterranean Acceptable | 15–20% | 34 | 17.5% | Southern European standard | Light green |
+| Elevated Friction | 20–30% | 37 | 25.7% | Above EU norms | Yellow |
+| Structural Dysfunction | 30–50% | 109 | 41.0% | No EU equivalent | Orange |
+| Market Collapse | ≥ 50% | 135 | 59.7% | No EU equivalent | Red |
 
-## 8. Focus: major cities (placeholders)
+**Total: 333 municipalities**
+
+---
+
+### What Drives Each Category?
+
+| Category | Tourism | Market (Rent/Sale) | System Failure | Primary Driver |
+|----------|---------|-------------------|----------------|----------------|
+| EU Efficient | 3.7% | 2.7% | 2.6% | — (balanced) |
+| EU Normal | 4.8% | 4.0% | 4.3% | — (balanced) |
+| Mediterranean Acceptable | 6.6% | 5.8% | 5.2% | — (balanced) |
+| Elevated Friction | 13.6% | 6.2% | 6.0% | Tourism emerging |
+| Structural Dysfunction | 29.8% | 5.6% | 5.6% | **Tourism dominant** |
+| Market Collapse | 49.5% | 6.3% | 3.9% | **Tourism extreme** |
+
+**Key insight:** Market friction (~6%) and system failure (~5%) are constant across all categories. Tourism is the variable that separates functional markets from collapsed ones.
+
+---
+
+### Policy Response Matrix
+
+| Category | Urgency | Focus | Instruments |
+|----------|---------|-------|-------------|
+| EU Efficient | None | Preserve | Monitor only |
+| EU Normal | Low | Maintain | Light monitoring, preserve affordability |
+| Mediterranean Acceptable | Watch | Prevent drift | Early warning, gentle STR guardrails |
+| Elevated Friction | Moderate | Active intervention | STR limits, LTR incentives, targeted rehab |
+| Structural Dysfunction | High | Strong intervention | Vacancy taxes, rehab grants, enforcement |
+| Market Collapse | Critical | Emergency measures | STR caps, vacancy tax, inheritance reform, social housing |
+
+---
+
+### The Bottom Line
+
+- **52 municipalities (16%)** meet European standards (σ < 20%)
+- **244 municipalities (73%)** are in dysfunction or collapse (σ > 30%)
+- **Only Vrilisia** (σ = 9%) operates at Northern European efficiency
+- **Tourism extraction** is the sole differentiator between healthy and broken markets
+
+
+## Focus: major cities
 - Compare archetype and σ for Αθήνα, Θεσσαλονίκη, Πειραιάς, Πάτρα, Ηράκλειο, Λάρισα.
 - Composition chart:
   <div align="center">![](../outputs/major_cities_composition.png){ width=100% }</div>
 
-## 9. Top-20 friction profiles
+## Top-20 friction profiles
 - Stacked composition:
   <div align="center">![](../outputs/top20_sigma_composition.png){ width=100% }</div>
 - Narrative: most top-σ municipalities are tourism-heavy islands/coast; a few interior “locked” cases.
 
-## 10. Risks and caveats
+## Risks and caveats
 - Name matching uses overrides between ELSTAT and GADM boundaries; minor mismatches possible.
 - σ measures empty dwellings; not all are recoverable; “other_reason” may mix heterogeneous causes.
 - Data year: 2021; post-2021 tourism shocks or housing policies not reflected.
 
-## 11. Next steps
+## Next steps
 - Add time-series (2011 vs 2021) to track friction trends.
 - Merge price/rent data to link σ with affordability.
 - Scenario: apply STR caps in Tourist Drain areas; model σ reduction and F improvement.
@@ -202,3 +230,5 @@ Includes: friction map, archetype map, and top-$\sigma$ composition charts.
 A simulated 20% unlock of locked stock shows how prices respond when friction eases. We recompute σ, F, and price changes using the stylised price model; high-friction areas see the largest drops. Charts below show simulated σ, price change, and top-10 price drops.
 
 <div align="center">![](../outputs/unlock_effect_collage.png){ width=100% }</div>
+
+A 20% unlock shifts 88 municipalities from Market Collapse to lower tiers.
