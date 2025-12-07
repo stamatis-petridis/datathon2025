@@ -43,6 +43,7 @@ maps:
 	$(PYTHON) scripts/unlock_simulator.py
 	$(PYTHON) scripts/national_locked_stock_pie.py
 	$(PYTHON) scripts/unlock_simulator_interactive.py
+	$(PYTHON) scripts/generate_unlock_gif.py --start 0 --end 40 --step 10 --duration 1500
 
 gif:
 	$(PYTHON) scripts/generate_unlock_gif.py --start 0 --end 40 --step 10 --duration 1500
