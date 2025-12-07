@@ -123,11 +123,14 @@ OVER_ONE = {
     "Molos-Agios Konstantinos": "ΚΑΜΕΝΩΝ ΒΟΥΡΛΩΝ",
     "South Kynouria": "ΝΟΤΙΑΣ ΚΥΝΟΥΡΙΑΣ",
 }
-# Three-bucket archetype palette used for both baseline and simulated maps.
+# EU benchmark palette used for both baseline and simulated maps.
 ARCT_COLORS = {
-    "PROBLEMATIC": "#d62728",
-    "TRANSITIONAL": "#ffbb33",
-    "HEALTHY": "#2ca02c",
+    "EU_EFFICIENT": "#1a9641",
+    "EU_NORMAL": "#a6d96a",
+    "MEDITERRANEAN_ACCEPTABLE": "#d9ef8b",
+    "ELEVATED_FRICTION": "#fee08b",
+    "STRUCTURAL_DYSFUNCTION": "#fdae61",
+    "MARKET_COLLAPSE": "#d73027",
 }
 
 
@@ -248,16 +251,20 @@ def simulate_unlock(
     res["price_ratio"] = ratio
     res["price_change_pct"] = (ratio - 1.0) * 100.0
 
-    # Archetypes (baseline and simulated) — three-bucket view
-    # PROBLEMATIC / TRANSITIONAL / HEALTHY, based only on σ.
+    # Archetypes (baseline and simulated) — EU benchmark view (6 buckets) based only on σ.
     def classify(sig, tour):
         sig = float(sig)
-        # Problematic: high σ, regardless of tourism mix
-        if sig > 0.5:
-            return "PROBLEMATIC"
-        if 0.25 <= sig <= 0.5:
-            return "TRANSITIONAL"
-        return "HEALTHY"
+        if sig < 0.10:
+            return "EU_EFFICIENT"
+        if sig < 0.15:
+            return "EU_NORMAL"
+        if sig < 0.20:
+            return "MEDITERRANEAN_ACCEPTABLE"
+        if sig < 0.30:
+            return "ELEVATED_FRICTION"
+        if sig < 0.50:
+            return "STRUCTURAL_DYSFUNCTION"
+        return "MARKET_COLLAPSE"
 
     res["archetype_base"] = res.apply(lambda r: classify(r["sigma"], r["share_tourism"]), axis=1)
     res["archetype_sim"] = res.apply(lambda r: classify(r["sigma_new"], r["share_tourism"]), axis=1)

@@ -122,21 +122,27 @@ Note: The multiplicative model slightly underestimates total $F = 1.53$ because 
 - $\sigma$ measures the share of homes that exist but are not accessible (not rented, not sold, not used). 
 - $F$ describes how much tighter the market behaves because this stock is locked.
 - National values: $\sigma \approx 0.345$ and $F \approx 1.53$.
-Archetypes across 333 municipalities:
+Archetypes across 333 municipalities (EU benchmark buckets):
 
-- Problematic (tourism-driven or systemic): 135 
-- Transitional: 132
-- Healthy: 66 
+- EU Efficient: 1 
+- EU Normal: 17 
+- Mediterranean Acceptable: 34 
+- Elevated Friction: 37 
+- Structural Dysfunction: 109 
+- Market Collapse: 135 
 
 Includes: friction map, archetype map, and top-$\sigma$ composition charts.
 
 ## 3. Method
 - Inputs: ELSTAT 2021 dwelling status by municipality; computed σ per municipality; shares by rent/sale, tourism (vacation+secondary), other reasons.
 - Friction: $F = \frac{1}{1-\sigma}$.
-- Archetypes (analysis groups):
-  - Problematic: σ > 0.5 (includes both tourism-driven and system-failure cases)
-  - Transitional: 0.25 ≤ σ ≤ 0.5
-  - Healthy: σ < 0.25
+- Archetypes (EU-style benchmark):
+  - EU Efficient: σ < 0.10
+  - EU Normal: 0.10 ≤ σ < 0.15
+  - Mediterranean Acceptable: 0.15 ≤ σ < 0.20
+  - Elevated Friction: 0.20 ≤ σ < 0.30
+  - Structural Dysfunction: 0.30 ≤ σ < 0.50
+  - Market Collapse: σ ≥ 0.50
 
 
 ## 4. Maps (placeholders)
@@ -145,10 +151,13 @@ Includes: friction map, archetype map, and top-$\sigma$ composition charts.
 - Archetype map:
   <div align="center">![](../outputs/choropleth_archetypes.png){ width=100% }</div>
 
-## 5. Archetype summary (from outputs/archetype_summary.json, grouped)
-- Problematic (Tourist Drain + System Failure): 135; avg σ 0.597; avg tourism share 0.495; avg market 0.063; avg system-failure 0.039
-- Transitional: 132; avg σ 0.387; avg tourism share 0.273; avg market 0.057; avg system-failure 0.058
-- Healthy: 66; avg σ 0.173; avg tourism share 0.070; avg market 0.054; avg system-failure 0.050
+## 5. Archetype summary (from outputs/archetype_summary.json)
+- EU Efficient: 1; avg σ 0.090; avg tourism 0.037; avg market 0.027; avg other 0.026
+- EU Normal: 17; avg σ 0.132; avg tourism 0.048; avg market 0.040; avg other 0.043
+- Mediterranean Acceptable: 34; avg σ 0.175; avg tourism 0.066; avg market 0.058; avg other 0.052
+- Elevated Friction: 37; avg σ 0.257; avg tourism 0.136; avg market 0.062; avg other 0.060
+- Structural Dysfunction: 109; avg σ 0.410; avg tourism 0.298; avg market 0.056; avg other 0.056
+- Market Collapse: 135; avg σ 0.597; avg tourism 0.495; avg market 0.063; avg other 0.039
 - Total municipalities: 333
 
 ## 6. Composition insights
@@ -158,11 +167,14 @@ Includes: friction map, archetype map, and top-$\sigma$ composition charts.
 - Transitional: mixed signals; watchlist for policy nudges.
 
 ## 7. Policy archetypes (decision table)
-| Archetype   | Trigger (σ / composition)          | Policy focus                                      | Instruments |
-|-------------|------------------------------------|---------------------------------------------------|-------------|
-| Problematic | σ > 0.5 (tourism or system-failure)| Cool tourism extraction and unlock stuck stock    | STR caps/permits, tourist tax, rehab grants, tax penalties on chronic vacancy, probate/ownership cleanup, social housing acquisition |
-| Transitional| 0.25–0.5 σ                         | Prevent drift upward                              | Light-touch STR regulation, monitoring, targeted rehab, modest incentives to LTR |
-| Healthy     | σ < 0.25                           | Maintain balance                                  | Monitoring, preserve affordability, gentle guardrails on STR |
+| Archetype                  | Trigger (σ)                | Policy focus                                      | Instruments |
+|----------------------------|----------------------------|---------------------------------------------------|-------------|
+| EU Efficient               | σ < 0.10                   | Monitor only                                      | Monitoring / keep status quo |
+| EU Normal                  | 0.10–0.15                  | Light monitoring, preserve balance                | Light monitoring, preserve affordability |
+| Mediterranean Acceptable   | 0.15–0.20                  | Early warning, prevent drift                      | Early warning, gentle STR guardrails, modest LTR incentives |
+| Elevated Friction          | 0.20–0.30                  | Active intervention                               | STR limits, incentives to shift to LTR, targeted rehab |
+| Structural Dysfunction     | 0.30–0.50                  | Strong intervention                               | Vacancy taxes, rehab grants, enforcement on chronic vacancy |
+| Market Collapse            | ≥ 0.50                     | Emergency measures                                | STR caps/permits, vacancy tax, inheritance/probate reform, social housing acquisition |
 
 ## 8. Focus: major cities (placeholders)
 - Compare archetype and σ for Αθήνα, Θεσσαλονίκη, Πειραιάς, Πάτρα, Ηράκλειο, Λάρισα.

@@ -26,11 +26,17 @@ def _norm(text: str) -> str:
 
 def classify_row(row: pd.Series) -> str:
     sigma = row["sigma"]
-    if sigma > 0.5:
-        return "PROBLEMATIC"
-    if 0.25 <= sigma <= 0.5:
-        return "TRANSITIONAL"
-    return "HEALTHY"
+    if sigma < 0.10:
+        return "EU_EFFICIENT"
+    if sigma < 0.15:
+        return "EU_NORMAL"
+    if sigma < 0.20:
+        return "MEDITERRANEAN_ACCEPTABLE"
+    if sigma < 0.30:
+        return "ELEVATED_FRICTION"
+    if sigma < 0.50:
+        return "STRUCTURAL_DYSFUNCTION"
+    return "MARKET_COLLAPSE"
 
 
 def load_data() -> pd.DataFrame:
@@ -70,13 +76,13 @@ def summarize(df: pd.DataFrame) -> Dict[str, Dict[str, float]]:
 
 
 def print_summary(summary: Dict[str, Dict[str, float]]) -> None:
-    print("Archetype summary:")
-    print(f"{'Archetype':20s} {'Count':>6s} {'Avg σ':>8s} {'Avg tourism':>12s}")
+    print("Archetype summary (EU benchmarks):")
+    print(f"{'Archetype':28s} {'Count':>6s} {'Avg σ':>8s} {'Avg tourism':>12s}")
     for archetype, stats in summary.items():
         if archetype == "total":
             continue
         print(
-            f"{archetype:20s} "
+            f"{archetype:28s} "
             f"{stats['count']:6d} "
             f"{stats['avg_sigma']:8.3f} "
             f"{stats['avg_share_tourism']:12.3f}"

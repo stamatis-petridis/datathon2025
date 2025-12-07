@@ -33,9 +33,12 @@ PNG_OUT = DATA_ROOT / "outputs" / "choropleth_archetypes.png"
 HTML_OUT = DATA_ROOT / "outputs" / "choropleth_archetypes.html"
 
 ARCT_COLORS = {
-    "PROBLEMATIC": "#d62728",
-    "TRANSITIONAL": "#ffbb33",
-    "HEALTHY": "#2ca02c",
+    "EU_EFFICIENT": "#1a9641",
+    "EU_NORMAL": "#a6d96a",
+    "MEDITERRANEAN_ACCEPTABLE": "#d9ef8b",
+    "ELEVATED_FRICTION": "#fee08b",
+    "STRUCTURAL_DYSFUNCTION": "#fdae61",
+    "MARKET_COLLAPSE": "#d73027",
 }
 
 OVER_ONE = {
@@ -111,11 +114,17 @@ def match_names(targets: Iterable[str], candidates: Dict[str, str]) -> Dict[str,
 
 def reclassify(row: pd.Series) -> str:
     sigma = row["sigma"]
-    if sigma > 0.5:
-        return "PROBLEMATIC"
-    if 0.25 <= sigma <= 0.5:
-        return "TRANSITIONAL"
-    return "HEALTHY"
+    if sigma < 0.10:
+        return "EU_EFFICIENT"
+    if sigma < 0.15:
+        return "EU_NORMAL"
+    if sigma < 0.20:
+        return "MEDITERRANEAN_ACCEPTABLE"
+    if sigma < 0.30:
+        return "ELEVATED_FRICTION"
+    if sigma < 0.50:
+        return "STRUCTURAL_DYSFUNCTION"
+    return "MARKET_COLLAPSE"
 
 
 def prepare_dataframe() -> Tuple[gpd.GeoDataFrame, pd.DataFrame]:
@@ -189,12 +198,12 @@ def plot_static(gdf: gpd.GeoDataFrame, counts: Dict[str, int]) -> None:
         Patch(color=ARCT_COLORS[label], label=f"{label.replace('_', ' ').title()} ({counts.get(label, 0)})")
         for label in labels
     ]
-    ax.legend(handles=legend_handles, title="Archetypes", loc="lower left")
-    ax.set_title("Housing Market Archetypes — Greece 2021", fontsize=14, weight="bold")
+    ax.legend(handles=legend_handles, title="EU Benchmarks", loc="lower left")
+    ax.set_title("Housing Market Status by EU Standards — Greece 2021", fontsize=14, weight="bold")
     ax.text(
         0.5,
         0.92,
-        "Four distinct housing regimes requiring different policy interventions",
+        "Very few municipalities meet European efficiency norms",
         fontsize=10,
         ha="center",
         transform=fig.transFigure,
@@ -218,7 +227,7 @@ def add_folium_legend(map_obj: folium.Map, counts: Dict[str, int]) -> None:
     html = (
         "<div style='position: fixed; bottom: 30px; right: 10px; z-index: 9999; "
         "background: white; padding: 10px; border: 1px solid #ccc; border-radius: 4px;'>"
-        "<b>Archetypes</b><br>"
+        "<b>EU Benchmarks</b><br>"
         f"{entries}"
         "</div>"
     )
