@@ -1,4 +1,4 @@
-.PHONY: install data csv friction analysis maps interactive report all clean
+.PHONY: install data csv friction analysis maps interactive report presentation all clean gif
 .ONESHELL:
 
 PYTHON := python3
@@ -64,6 +64,16 @@ report:
 	fi
 
 all: install data csv friction analysis maps report
+
+presentation:
+	@printf "Generating presentation PPTX (pandoc)...\n"; \
+	if command -v pandoc >/dev/null 2>&1; then \
+		pandoc docs/presentation.md \
+			--resource-path=.:docs:outputs \
+			-o outputs/presentation.pptx; \
+	else \
+		echo "pandoc not installed; skipping presentation export"; \
+	fi
 
 clean:
 	rm -f $(OUTPUT_DIR)/*.png $(OUTPUT_DIR)/*.html $(OUTPUT_DIR)/*.json $(OUTPUT_DIR)/*.csv $(OUTPUT_DIR)/*.pdf
